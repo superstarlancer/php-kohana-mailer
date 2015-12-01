@@ -38,4 +38,6 @@ $result = $message->send();
 if($result) Session::instance()->set('message','Email sent successfully');
 ```
 
+For advancer using, read classes/Kohana/Email.php - class if self-documented
+
 Enjoy!
