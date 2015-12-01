@@ -46,9 +46,9 @@ class Kohana_Email{
 					}
 				$this->_mailer->SMTPSecure = $options['encryption'];
 				$this->_mailer->Port = $options['port'];
-				$this->_mailer->SMTPDebug = 4;
+				$this->_mailer->SMTPDebug = 0;
 				$this->_mailer->Debugoutput = function($str, $level) {
-					profilertoolbar::adddata("debug level $level; message: $str",'email');
+					//profilertoolbar::adddata("debug level $level; message: $str",'email');
 					//echo "debug level $level; message: $str<br>";
 					};
 			}elseif($driver === 'sendmail'){
@@ -228,6 +228,17 @@ class Kohana_Email{
 	 */
 	public function return_path($email){
 		$this->_mailer->ReturnPath = $email;
+		return $this;
+	}
+
+	/**
+	 * Set the return path for bounce messages.
+	 *
+	 * @param	 string	email address
+	 * @return	Email
+	 */
+	public function sender($email){
+		$this->_mailer->Sender = $email;
 		return $this;
 	}
 

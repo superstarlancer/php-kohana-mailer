@@ -1,5 +1,6 @@
 # Kohana Email module
-PHPMailer driver for kohana
+
+Factory-based email class. This class is a simple wrapper around [PHPMailer](https://github.com/PHPMailer/PHPMailer).
 
 ## How to install
 clone with `--recursive` option
@@ -20,8 +21,8 @@ Simple use case::
 ```php
 $email_subject = 'Hi there!';
 $email_body = 'Hi, guys! This is my awesome email.';
-
-$message = Email::factory($email_subject, $email_body,$is_html)
+$is_html = false;
+$message = Email::factory($email_subject, $email_body, $is_html)
 	->from('sender@example.com')
 	->to('first.recipient@example.com')
 	->to('second.recipient@example.com', 'Mr. Recipient', 'CC')
@@ -39,6 +40,23 @@ $result = $message->send();
 if($result) Session::instance()->set('message','Email sent successfully');
 ```
 
-For advancer using, read classes/Kohana/Email.php - class if self-documented
+or like this
+```php
+$email_body = '<p>This is <em>my</em> body, it is <strong>nice</strong>.</p>';
+$message = Email::factory('Hi there!', $email_body, true);
+$message->from('sender@example.com');
+$message->to('first.recipient@example.com');
+$message->send();
+```
+
+Additional senders can be added using the `from()` and `reply_to()` methods. If multiple sender addresses are specified, you need to set the actual sender of the message using the `sender()` method. Set the bounce recipient by using the `return_path()` method.
+
+To access and modify the [PHPMailer message](https://github.com/PHPMailer/PHPMailer) directly, use the `mailer()` method.
+
+For advanced using, read classes/Kohana/Email.php - class is self-documented
+
+## Configuration
+
+Configuration is stored in `config/email.php`. Options are dependant upon transport method used. Consult the Swiftmailer documentation for options available to each transport.
 
 Enjoy!
