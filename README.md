@@ -10,6 +10,8 @@ Kohana::modules(array(
 	...
 ));
 ```
+Then copy `MODPATH/email/config/email.php` to `APPPATH/config/email.php`.
+Well done!
 
 ## Using
 Simple use case::
@@ -22,7 +24,8 @@ $message = Email::factory($email_subject, $email_body,$is_html)
 	->to('first.recipient@example.com')
 	->to('second.recipient@example.com', 'Mr. Recipient', 'CC')
 	->to(array(
-		'fifth.recipient@example.com','sixth.recipient@example.com'
+		'fifth.recipient@example.com',
+		'sixth.recipient@example.com'
 		)
 	)
 	->to(array(
