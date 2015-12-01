@@ -2,7 +2,8 @@
 PHPMailer driver for kohana
 
 ## How to install
-clone with --recursive option
+clone with `--recursive` option
+
 Put all files into `modules/email` directory and enable module in `bootstrap.php`:
 ```php
 Kohana::modules(array(
