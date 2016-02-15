@@ -43,8 +43,18 @@ class Kohana_Email{
 				'driver'  => 'native',
 				'options' => array(),
 				'charset' => 'UTF-8',
-				'debug' => 0,
 				'from' => null
+			);
+			if($this->_config['driver']=='smtp') $this->_config['options'] += array(
+				'hostname'=>null,
+				'username'=>null,
+				'password'=>null,
+				'port'=>25,
+				'encryption'=>'',
+				'debug' => 0,
+				'debug_output' => function($str, $level) {
+					Log::instance()->add(Log::DEBUG, 'Email(:level): :message',[':level'=>$level,':message'=>$str]);
+					},
 			);
 			// Extract configured options
 			extract($this->_config, EXTR_SKIP);
@@ -60,9 +70,8 @@ class Kohana_Email{
 					}
 				$this->_mailer->SMTPSecure = $options['encryption'];
 				$this->_mailer->Port = $options['port'];
-				$this->_mailer->SMTPDebug = $debug;
-				$this->_mailer->Debugoutput = function($str, $level) {
-				};
+				$this->_mailer->SMTPDebug = $options['debug'];
+				$this->_mailer->Debugoutput = $options['debug_output'];
 			// driver sendmail
 			}elseif($driver === 'sendmail'){
 				$this->_mailer->isSendmail();

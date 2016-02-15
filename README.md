@@ -56,7 +56,20 @@ To access and modify the [PHPMailer message](https://github.com/PHPMailer/PHPMai
 For advanced using, read classes/Kohana/Email.php - class is self-documented
 
 ## Configuration
-
-Configuration is stored in `config/email.php`. Options are dependant upon transport method used. Consult the Swiftmailer documentation for options available to each transport.
+```php
+return array(
+	'driver' => 'native', // native, sendmail, smtp
+	/*
+	 * Driver options:
+	 * @param   null    native: no options
+	 * @param   string  sendmail: executable path, with -bs or equivalent attached
+	 * @param   array   smtp: hostname, (username), (password), (port), (encryption), (debug) 0-4 ,function($str, $level)(debug_output)
+	 */
+	'options' => array(),
+	'from' => array('noreply@example.com','Example noreply mailer'),
+	'charset' => 'UTF-8' // charset
+);
+```
+Configuration is stored in `config/email.php` by default. Options are dependant upon transport method used. Consult PHPMailer documentation for options available to each transport.
 
 Enjoy!
