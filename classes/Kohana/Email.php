@@ -27,15 +27,29 @@ class Kohana_Email{
 		// else if it not exists
 			// create instance of PHPMailer
 			$this->_mailer = new PHPMailer;
+			$this->config_load();
+			return $this->_mailer;
+		}
+
+	/**
+	* Load kohana config
+	*
+	* @param	 string	config name
+	* @return	Email
+	*/
+	public function config_load($name='email'){
 			// Load email configuration, make sure minimum defaults are set
-			$this->_config = Kohana::$config->load('email')->as_array() + array(
+			$this->_config = Kohana::$config->load($name)->as_array() + array(
 				'driver'  => 'native',
 				'options' => array(),
+				'charset' => 'UTF-8',
+				'debug' => 0,
+				'from' => null
 			);
-			$this->_mailer->CharSet = 'UTF-8';
 			// Extract configured options
 			extract($this->_config, EXTR_SKIP);
-			
+			$this->_mailer->CharSet = $charset;
+			// driver SMTP
 			if($driver === 'smtp'){
 				$this->_mailer->isSMTP();
 				$this->_mailer->Host = $options['hostname'];
@@ -46,15 +60,20 @@ class Kohana_Email{
 					}
 				$this->_mailer->SMTPSecure = $options['encryption'];
 				$this->_mailer->Port = $options['port'];
-				$this->_mailer->SMTPDebug = 0;
+				$this->_mailer->SMTPDebug = $debug;
 				$this->_mailer->Debugoutput = function($str, $level) {
-					//profilertoolbar::adddata("debug level $level; message: $str",'email');
-					//echo "debug level $level; message: $str<br>";
-					};
+				};
+			// driver sendmail
 			}elseif($driver === 'sendmail'){
 				$this->_mailer->isSendmail();
 				}
-			
+			// set from addr
+			//if($from) call_user_func_array([$this,'from'],(is_array($from)?((isAssoc($from)?[$from]:$from)$from):[$from]))
+			if($from){
+				$from_arrgs = is_array($from)?(Arr::is_assoc($from)?[$from]:$from) : [$from];
+				call_user_func_array([$this,'from'],$from_arrgs);
+				}
+		return $this;
 		}
 	/**
 	* Create a new email message.
@@ -263,5 +282,4 @@ class Kohana_Email{
 	public function send(){
 		return $this->_mailer->send();
 		}
-
 	}
