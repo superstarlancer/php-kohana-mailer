@@ -57,12 +57,6 @@ class Kohana_Email{
 					Log::instance()->add(Log::DEBUG, 'Email(:level): :message',[':level'=>$level,':message'=>$str]);
 					},
 				);
-				$this->_mailer->SMTPAutoTLS = false;
-				$this->_mailer->SMTPOptions = array('ssl' => [
-						'verify_peer' => false,
-						'verify_peer_name' => false,
-						'allow_self_signed' => true
-						]);
 				}
 			// Extract configured options
 			extract($this->_config, EXTR_SKIP);
@@ -80,6 +74,12 @@ class Kohana_Email{
 				$this->_mailer->Port = $options['port'];
 				$this->_mailer->SMTPDebug = $options['debug'];
 				$this->_mailer->Debugoutput = $options['debug_output'];
+				$this->_mailer->SMTPAutoTLS = false;
+				$this->_mailer->SMTPOptions = array('ssl' => [
+						'verify_peer' => false,
+						'verify_peer_name' => false,
+						'allow_self_signed' => true
+						]);
 			// driver sendmail
 			}elseif($driver === 'sendmail'){
 				$this->_mailer->isSendmail();
