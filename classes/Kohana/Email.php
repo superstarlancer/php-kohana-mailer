@@ -45,7 +45,8 @@ class Kohana_Email{
 				'charset' => 'UTF-8',
 				'from' => null
 			);
-			if($this->_config['driver']=='smtp') $this->_config['options'] += array(
+			if($this->_config['driver']=='smtp'){
+				$this->_config['options'] += array(
 				'hostname'=>null,
 				'username'=>null,
 				'password'=>null,
@@ -55,7 +56,14 @@ class Kohana_Email{
 				'debug_output' => function($str, $level) {
 					Log::instance()->add(Log::DEBUG, 'Email(:level): :message',[':level'=>$level,':message'=>$str]);
 					},
-			);
+				);
+				$this->_mailer->SMTPAutoTLS = false;
+				$this->_mailer->SMTPOptions = array('ssl' => [
+						'verify_peer' => false,
+						'verify_peer_name' => false,
+						'allow_self_signed' => true
+						]);
+				}
 			// Extract configured options
 			extract($this->_config, EXTR_SKIP);
 			$this->_mailer->CharSet = $charset;
