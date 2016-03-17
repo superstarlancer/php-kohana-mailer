@@ -3,8 +3,8 @@
  * Email message building and sending.
  *
  * @package		Kohana/PHPMailer
- * @category	 Email
- * @author		 Timophey Lanevich
+ * @category	Email
+ * @author		Timophey Lanevich
  * @copyright	(c) 2014 Timophey Lanevich
  * @license		http://kohanaphp.com/license.html
  */
@@ -14,8 +14,9 @@ class Kohana_Email{
 	 * @var	object	PHPMailer instance
 	 */
 	public $_mailer;
-	private $_from_changed;
+	private $_from_changed=false;
 	protected $_config;
+	protected $_config_name;
 
 	/**
 	 * Creates a PHPMailer instance.
@@ -38,6 +39,7 @@ class Kohana_Email{
 	* @return	Email
 	*/
 	public function config_load($name='email'){
+			$this->_config_name = $name;
 			// Load email configuration, make sure minimum defaults are set
 			$this->_config = Kohana::$config->load($name)->as_array() + array(
 				'driver'  => 'native',
@@ -87,6 +89,7 @@ class Kohana_Email{
 			// set from addr
 			//if($from) call_user_func_array([$this,'from'],(is_array($from)?((isAssoc($from)?[$from]:$from)$from):[$from]))
 			if($from){
+				$this->_from_changed = false;
 				$from_arrgs = is_array($from)?(Arr::is_assoc($from)?[$from]:$from) : [$from];
 				call_user_func_array([$this,'from'],$from_arrgs);
 				}
@@ -213,7 +216,7 @@ class Kohana_Email{
 	 * @param	 string	 full name
 	 * @return	Email
 	 */
-	public function from($email, $name = NULL){
+	public function from($email, $name = NULL, $type='From'){
 		if (is_array($email))
 		{
 			foreach ($email as $key => $value)
@@ -234,14 +237,16 @@ class Kohana_Email{
 		{
 			if($this->_from_changed){
 				// Call $this->_message->{add$Type}($email, $name)
-				call_user_func(array($this->_mailer, 'addReplyTo'), $email, $name);
+				//call_user_func(array($this->_mailer, 'add'.$Type), $email, $name);
+				$this->_mailer->addReplyTo($email, $name);
 			}else{
 				// Call $this->_message->setFrom($address, $name = '', $auto = true)
-				call_user_func(array($this->_mailer, 'setFrom'), $email, $name);
+				//call_user_func(array($this->_mailer, 'setFrom'), $email, $name);
+				$this->_mailer->setFrom($email, $name);
+				$this->_mailer->Sender = $email;
 				$this->_from_changed = true;
 				}
 		}
-
 		return $this;
 	}
 
